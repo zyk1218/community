@@ -9,10 +9,13 @@ import life.isip.community.provider.GitHubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 
@@ -44,25 +47,30 @@ public class AuthorizeController {
     public String callback(
             @RequestParam(name = "code") String code,
             @RequestParam(name = "state") String state,
-            HttpServletRequest request){
+            HttpServletRequest request,
+            HttpServletResponse response){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(client_id);
         accessTokenDTO.setClient_secret(client_secret);
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
         accessTokenDTO.setRedirect_uri(redirect_uri);
-        String token = gitHubProvider.getAccessToken(accessTokenDTO);
-        GitHubUser gitHubUser = gitHubProvider.getUser(token);
+        //该accessToken是为了获取gitHub认证。
+        String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
+        GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
         if(gitHubUser != null){
             UserModel userModel = new UserModel();
-            userModel.setToken(UUID.randomUUID().toString());
+            //该token是检测用户是否登录。
+            String token = UUID.randomUUID().toString();
+            userModel.setToken(token);
             userModel.setName(gitHubUser.getName());
             userModel.setAccountId(gitHubUser.getId().toString());
             userModel.setGmtCreate(System.currentTimeMillis());
             userModel.setGmtmodified(userModel.getGmtCreate());
             userMapper.insertUser(userModel);
             //登录成功
-            request.getSession().setAttribute("gitHubUser",gitHubUser);
+            request.getSession().setAttribute("gitHubUser",gitHubUser); //将该用户添加到session中
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else{
             //登录失败
