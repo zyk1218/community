@@ -27,8 +27,13 @@ public class IndexController {
             if(cookie.getName().equals("token")){
                 String token = cookie.getValue();
                 UserModel user = userMapper.findUserByToken(token);
+                //用户已存在：
                 if(user != null){
-                    request.getSession().setAttribute("user",user);
+                    request.getSession().setAttribute("gitHubUser",user);
+                }
+                //用户未存在（代指各种意外情况）
+                if(user == null){
+                    request.getSession().removeAttribute("gitHubUser");
                 }
             }
         }

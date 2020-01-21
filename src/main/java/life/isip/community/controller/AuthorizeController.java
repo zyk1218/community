@@ -21,6 +21,7 @@ import java.util.UUID;
 
 /**
  * 该Controller主要作用是获取GitHub上用户信息。
+ * @author remember
  */
 
 
@@ -58,7 +59,7 @@ public class AuthorizeController {
         //该accessToken是为了获取gitHub认证。
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
         GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
-        if(gitHubUser != null){
+        if(gitHubUser != null){ //git用户认证成功操作：
             UserModel userModel = new UserModel();
             //该token是检测用户是否登录。
             String token = UUID.randomUUID().toString();
@@ -69,8 +70,8 @@ public class AuthorizeController {
             userModel.setGmtmodified(userModel.getGmtCreate());
             userMapper.insertUser(userModel);
             //登录成功
-            request.getSession().setAttribute("gitHubUser",gitHubUser); //将该用户添加到session中
             response.addCookie(new Cookie("token",token));
+            request.getSession().setAttribute("gitHubUser",gitHubUser); //将该用户添加到session中
             return "redirect:/";
         }else{
             //登录失败
