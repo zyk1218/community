@@ -1,0 +1,13 @@
+body{
+    background-color: #d2d2d2;
+}
+
+.main{
+    background-color: white;
+    margin: 30px;
+}
+
+.bth-publish{
+    float: right;
+    margin-bottom: 10px;
+}
