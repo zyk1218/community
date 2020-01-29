@@ -10,7 +10,7 @@
 </head>
 <body>
 <nav class="navbar navbar-default">
-    <div class="container-fluid">  <!--container-fluid的意思是流式布局-->
+    <div class="container-fluid">  <!--container-fluid的意思是"流式布局"-->
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -30,7 +30,7 @@
             <ul class="nav navbar-nav navbar-right">
 
                 <li class="dropdown" th:if="${session.gitHubUser!=null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false" th:text="${session.gitHubUser.getName()}"><span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">消息中心</a></li>
@@ -53,22 +53,25 @@
             <h2> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
             <hr/>
             <!--表单-->
-            <form action="">
+            <form action="/publish" method="post">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题...">
+                    <input type="text" class="form-control" id="title" name="title" th:value="${title}" placeholder="问题标题...">
                 </div>
                 <div class="form-group">
-                    <label for="title">问题补充（参考右侧提示）</label>
-                    <textarea name="description" id="description" class="form-control" cols="30" rows="10" placeholder="问题补充..."></textarea>
+                    <label for="description">问题补充（参考右侧提示）</label>
+                    <textarea name="description" id="description" class="form-control" cols="30" rows="10" th:text="${description}" placeholder="问题补充..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">输入标签</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以逗号隔开，每个标签不超过10个字...">
+                    <input type="text" class="form-control" id="tag" name="tag" th:value="${tag}" placeholder="输入标签，以逗号隔开，每个标签不超过10个字...">
                 </div>
-
+                <li th:if="${error != null}">
+                    <span class="alert alert-danger"  role="alert" th:text="${error}"></span>
+                </li>
                 <button type="submit" class="btn btn-success bth-publish">发布</button>
             </form>
+
         </div>
         <!--左边布局结束-->
 
@@ -77,12 +80,9 @@
         <!--右边布局-->
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>发起问题指南</h3><br>
-            简明扼要
-
+            简明扼要<br>
+            待补充...
         </div>
-
-
-
     </div>
 </div>
 </body>

@@ -23,17 +23,19 @@ public class IndexController {
     @GetMapping("/")
     public String index(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("token")){
-                String token = cookie.getValue();
-                UserModel user = userMapper.findUserByToken(token);
-                //用户已存在：
-                if(user != null){
-                    request.getSession().setAttribute("gitHubUser",user);
-                }
-                //用户未存在（代指各种意外情况）
-                if(user == null){
-                    request.getSession().removeAttribute("gitHubUser");
+        if(cookies!=null && cookies.length != 0){
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("token")){
+                    String token = cookie.getValue();
+                    UserModel user = userMapper.findUserByToken(token);
+                    //用户已存在：
+                    if(user != null){
+                        request.getSession().setAttribute("gitHubUser",user);
+                    }
+                    //用户未存在（代指各种意外情况）
+                    if(user == null){
+                        request.getSession().removeAttribute("gitHubUser");
+                    }
                 }
             }
         }
